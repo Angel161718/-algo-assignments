@@ -119,6 +119,36 @@ def main():
   graph = build_graph(bin_strs)
   idx_map = {int_vals[i]: index-reprs[i] for i in range(len(int_vals))}
 
+  if mode == 'graph':
+    for node in sorted(graph):
+      print(f"{node} -> {graph[node]}")
+
+      elif mode == 'dfs':
+        all_paths = []
+        if start is not None:
+          if start not in graph:
+            print(f"Ο κόμβος {start} δεν υπάρχει στον γράφο.")
+            return
+          dfs_search([start], {start}, graph, idx_map, all_paths)
+        else:
+          all_paths = find_all_dfs_paths(graph, idx_map)
+
+        for path in all_paths:
+          print_path(path, length)
+
+  elif mode == 'bts':
+    paths = bts_walks(s, t)
+    for bts_path in paths:
+      print("", bts_path)
+      binaries = [ternary_to_binary(p) for p in bts_path]
+      print("", binaries)
+      indices = ["".join(map(str, [i for i in range(length) if (int(b,2) >> (length - i - 1)) & 1])) for b in binaries]
+      print("", indices)
+      decimals = [int(b, 2) for b in binaries]
+      print("", decimals)
+
+if __name__ == '__main__':
+  main()
   
   
 
