@@ -8,6 +8,55 @@ def generate_permutations(s, t):
     int_vals = [int(b, 2) for b in bin_strs]
     return bin_strs, index_reprs, int_vals
 
+def hamming_distance(a, b):
+    return sum(x != y for x, y in zip(a, b))
+
+def build_graph(bin_strs):
+    graph = {}
+    for i, b in enumerate(bin_strs):
+        graph[b] = []
+        for j, other in enumerate(bin_strs):
+            if i != j and hamming_distance(b, other) == 2:
+                graph[b].append(other)
+    return graph
+
+def is_genlex_path(index_paths):
+    for i in range(len(index_paths) - 1):
+        prefix = index_paths[i]
+        next_prefix = index_paths[i + 1][:len(prefix)]
+        if prefix != next_prefix:
+            return False
+    return True
+def hamming_index_distance(a, b):
+    return sum(x != y for x, y in zip(a, b))
+def dfs_search(path, visited, graph, idx_map, all_paths):
+    if len(visited) == len(graph):
+        all_paths.append(path[:])
+        return
+    current = path[-1]
+    for neighbor in graph[current]:
+        if neighbor not in visited:
+            new_path = path + [neighbor]
+            if is_genlex_path([idx_map[p] for p in new_path]) and hamming_index_distance(idx_map[current], idx_map[neighbor]) == 1:
+                visited.add(neighbor)
+                dfs_search(new_path, visited, graph, idx_map, all_paths)
+                visited.remove(neighbor)
+                
+def find_all_dfs_paths(graph, idx_map):
+    all_paths = []
+    for start in graph:
+        dfs_search([start], {start}, graph, idx_map, all_paths)
+    return all_paths
+def generate_sigma_strings(s, t):
+    total = 2 ** (s - 1)
+    sigmas = []
+    for i in range(total):
+        bits = bin(i)[2:].zfill(s - 1)
+        suffix = ''.join('-' if b == '1' else '+' for b in bits)
+        sigmas.append('0' * t + '-' + suffix)
+    return sigmas
+
+
 def main():
     parser = argparse.ArgumentParser(description="Γράφος μεταθέσεων με DFS και BTS")
     parser.add_argument("s", type=int, help="Αριθμός μηδενικών")
