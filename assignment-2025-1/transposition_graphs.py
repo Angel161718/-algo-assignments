@@ -41,7 +41,8 @@ def dfs_search(path, visited, graph, idx_map, all_paths):
                 visited.add(neighbor)
                 dfs_search(new_path, visited, graph, idx_map, all_paths)
                 visited.remove(neighbor)
-                
+
+
 def find_all_dfs_paths(graph, idx_map):
     all_paths = []
     for start in graph:
